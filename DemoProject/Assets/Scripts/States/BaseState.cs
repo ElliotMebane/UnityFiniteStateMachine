@@ -6,9 +6,14 @@ public class BaseState : IState
 {
     protected System.Object _contextObject;
     protected StateInternalStates _stateInternalState;
-    protected FiniteStateMachine _FSM; 
-    
-    public BaseState ( System.Object pContext, FiniteStateMachine pFSM )
+    protected FiniteStateMachine _FSM;
+
+    public BaseState()
+    {
+        // empty
+    }
+
+    public void init ( System.Object pContext, FiniteStateMachine pFSM )
     {
         _contextObject = pContext;
         _FSM = pFSM;
@@ -35,12 +40,4 @@ public class BaseState : IState
     {
         // empty
     }
- 
-}
-
-public enum StateInternalStates
-{
-    Inactive,
-    Execute,
-    Exiting
 }

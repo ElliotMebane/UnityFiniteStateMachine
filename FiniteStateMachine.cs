@@ -11,16 +11,16 @@ using System.Collections;
 /// </summary>
 public class FiniteStateMachine     
 {
-    private Dictionary<Type, BaseState> _states;
+    private Dictionary<Type, IState> _states;
     private MonoBehaviour _monoBehaviourContext; // needed so we can call StartCoroutine
-    private BaseState _activeState;
-    private BaseState _nextState;
+    private IState _activeState;
+    private IState _nextState;
     private IEnumerable _activeStateIEnumerable;
 
 	public FiniteStateMachine ( MonoBehaviour pMonoBehaviourContext, List<Type> pStateTypes = null )
 	{
         _monoBehaviourContext = pMonoBehaviourContext;
-        _states = new Dictionary<Type, BaseState>();
+        _states = new Dictionary<Type, IState>();
 
         if (pStateTypes != null && pStateTypes.Count > 0)
         {
@@ -31,21 +31,22 @@ public class FiniteStateMachine
         }    
     }
 
-    public BaseState AddState ( Type pStateType )
+    public IState AddState ( Type pStateType )
     {
-        BaseState tReturnState = null;
+        IState tReturnState = null;
 
         if (!_states.ContainsKey( pStateType ))
         {
-            object[] tParams = new object[2] { _monoBehaviourContext, this };
-            _states[ pStateType ] = Activator.CreateInstance( pStateType, tParams ) as BaseState;
-            tReturnState = _states[ pStateType ];
+            // object[] tParams = new object[2] { _monoBehaviourContext, this };
+            tReturnState = (IState) Activator.CreateInstance( pStateType );
+            tReturnState.init( _monoBehaviourContext, this );
+            _states[ pStateType ] = tReturnState;
         }
         
         return tReturnState;
     }
 
-    public BaseState GetState ( Type pStateType )
+    public IState GetState ( Type pStateType )
     {
         if ( _states.ContainsKey( pStateType ) )
         {
@@ -175,4 +176,11 @@ public class FiniteStateMachine
             return null;
         }
     }
+}
+
+public enum StateInternalStates
+{
+    Inactive,
+    Execute,
+    Exiting
 }

@@ -13,7 +13,7 @@ public class StatePlay : BaseState, IState
     private Canvas canvasCover;
     private Image cover;
 
-    public StatePlay( System.Object pContext, FiniteStateMachine pFSM ) : base ( pContext, pFSM )
+    public StatePlay()
     {
         // empty
     }

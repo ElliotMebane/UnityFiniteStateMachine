@@ -10,7 +10,7 @@ public class StateMainMenu : BaseState, IState {
     private Text frameCount;
     private int initialFrame;
 
-    public StateMainMenu( System.Object pContext, FiniteStateMachine pFSM ) : base( pContext, pFSM )
+    public StateMainMenu()
     {
         // empty
     }

@@ -7,4 +7,5 @@ public interface IState
     IEnumerable Execute ();
     void BeginExit();
     void SetStateInternalState ( StateInternalStates pStateControl );
+    void init( System.Object pContext, FiniteStateMachine pFSM );
 }
