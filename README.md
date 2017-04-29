@@ -1,7 +1,7 @@
 # UnityFiniteStateMachine
 A Finite State Machine for Unity with States encapsulated in their own classes, few structural requirements of each State and minimal reliance on Unity classes. 
 
-I found 3 State Machines with features I like. I combined the features I like to create this State Machine. All 3 share the notion of _Pure Code_, meaning little to no reliance on Unity code or classes like MonoBehaviour. More info about each of the State Machines I referenced when writing this FSM are below:  
+I found 3 State Machines with features I like. I combined the features I like to create this State Machine. All 3 share the notion of _Pure Code_, meaning little to no reliance on Unity code or classes like MonoBehaviour. More info about each of the State Machines I referenced when writing this FSM is below:  
   
 1) Jackson Dunstan's FSM  
 http://jacksondunstan.com/articles/3137  
