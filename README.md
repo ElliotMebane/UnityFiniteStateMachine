@@ -28,10 +28,10 @@ Here are the features of this FSM, cobbled together from features in the above F
 — Anticipates transitional behavior.  
 — Uses a single Execute method for all Iterator activity. The BeginExit method allows the FSM to initiate the State's exit or the State itself may trigger the exit when its internal processes are finished.  
 — Each State is responsible for its own transitions. A shared transition can be used but is not required. Any IEnumerable method in any class may be called from a State to implement something like a shared Transition class.  
-— Use of an Interface so that it's easy to ensure that all States have the necessary properties (like a reference to the FSM) without forcing user to extend a BaseState. StateKit handles similar concerns in a similar way: manual injection of important info into concrete States via a call to a setMachineAndContext method (which is enforced by its Abstract SKState class) as part of the FSM's addState method. I enforce an init method via an Interface which takes a context object on which the State should operate and a reference to the FSM that controls the State's fate. 
-— Uses the Type of the State Classes for saving a dictionary of States that have been added to the FSM.  
+— Use of an Interface so that it's easy to ensure that all States have the necessary properties (like a reference to the FSM) without forcing user to extend a BaseState. StateKit handles similar concerns in a similar way: manual injection of important info into concrete States via a call to a setMachineAndContext method (which is enforced by its Abstract SKState class) as part of the FSM's addState method. I enforce an init method via an Interface which takes a context object on which the State should operate and a reference to the FSM that controls the State's fate.  
+— Uses the Type of the State Classes for saving a dictionary of States that have been added to the FSM (like StateKit)
 — No Enter state. A State may implement a transition when it starts as the first part of the Execute method.  
-— Manual call to FSM when State finishes Exiting. Although Loose Coupling is worthwhile in many architectural decisions, StateMachines seem like a good place for some tight coupling.  
+— Manual call to FSM when State finishes Exiting. Although Loose Coupling is worthwhile in many architectural decisions, StateMachines seem like a good place for some tight coupling. Instead of using an Observer pattern to allow States to notify their controlling FSM when they're done exiting, I make the call to FSM.OnStateExitComplete directly from State to FSM.  
 — No transitions as separate classes are required. States handle their own transitions as part of the Execute method.  
   
 Downsides:  
