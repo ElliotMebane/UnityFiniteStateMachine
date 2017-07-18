@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class StateMainMenu : BaseState, IState {
+public class StateMainMenu : BaseState {
 
     private Canvas canvas;
     private Canvas canvasCover;
@@ -41,6 +41,7 @@ public class StateMainMenu : BaseState, IState {
         }
         canvasCover.enabled = false;
 
+        // Hold here awaiting user input.
         // Update the frame count until we transition
         while ( _stateInternalState == StateInternalStates.Execute )
         {

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 /// <summary>
 /// A state for the game play portion of the example
 /// </summary>
-public class StatePlay : BaseState, IState
+public class StatePlay : BaseState
 {
     private GameObject targetsContainer;
     private List<GameObject> targets;
@@ -57,7 +57,7 @@ public class StatePlay : BaseState, IState
 
         EndEnter();
         
-        // Handle clicks
+        // Hold here and handle clicks
         while ( _stateInternalState == StateInternalStates.Execute )
         {
             if ( Input.GetMouseButtonDown( 0 ) )
@@ -120,10 +120,10 @@ public class StatePlay : BaseState, IState
         if ( targets.Count == 0 )
         {
             // Transition to the main menu using the screen fade transition
-            //var nextState = new MainMenuState();
-            //var transition = new ScreenFadeTransition( 2 );
-            //var eventArgs = new StateBeginExitEventArgs( nextState, transition );
-            //OnBeginExit( this, eventArgs );
+            // var nextState = new MainMenuState();
+            // var transition = new ScreenFadeTransition( 2 );
+            // var eventArgs = new StateBeginExitEventArgs( nextState, transition );
+            // OnBeginExit( this, eventArgs );
 
             _FSM.SetNextState( typeof( StateMainMenu ), true );
         }
