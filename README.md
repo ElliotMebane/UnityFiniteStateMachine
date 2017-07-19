@@ -34,10 +34,28 @@ Here are the features of this FSM, cobbled together from features in the above F
 — Manual call to FSM when State finishes Exiting. Although Loose Coupling is worthwhile in many architectural decisions, StateMachines seem like a good place for some tight coupling. Instead of using an Observer pattern to allow States to notify their controlling FSM when they're done exiting, I make the call to FSM.OnStateExitComplete directly from State to FSM.  
 — No transitions as separate classes are required. States handle their own transitions as part of the Execute method.  
   
-Downsides:  
-When doing a similar transition in multiple frames, we may see repetition of similar transition code in each State. This could be avoided by optionally putting the transition content in a separate class. This might look similar to the template Transition class used in Dunstan's sample.  
+<strong>Q: Can you give me an overview of the flow that happens when moving from State to State?</strong>  
+The execute method of a State is where all the action in a State is based. When a State first becomes active Execute will be called as a coroutine and will usually run until it encounters some code structure that causes it to return an IEnumerable. This could be a foreach loop, while loop, etc. (See the example code for details). The code will often _hold_ at this point in the Execute method, waiting for some user input to release it and allow the code to proceed farther down the Execute method. Often, setting the \_stateInternalState to something other than StateInternalStates.Execute is the best way to indicate to the Execute method that it's time to move ahead. A good way to do this is to call SetNextState on the FSM after some user action, which in turn updates the State's \_stateInternalState then calls BeginExit on the State. The active State can recognize that \_stateInternalState is not set to StateInternalStates.Execute anymore and release the Execute method to continue running. BeginExit and the tail end of the Execute method are where you perform _exit_ related cleanup and transition activities on the active State before allowing the next State to become active. After completing all the exiting activities on the active State, allow the FSM to transition to the next State by calling OnStateExitComplete on the FSM.  
   
-I implemented the FSM in 2 sample projects. One was based on Dunstan's sample and is included in this repository. The second is a Poker game I published here:   https://github.com/ElliotMebane/SevenUpDrawPoker  
+<strong>Q: What things may I expect to happen when a State is active?</strong>  
+— Every frame while the FSM is running the active state's Execute method will be called. 
+— When FSM.ExitActiveState is called (directly or by way of SetNextState) \_stateInternalState will be set to StateInternalStates.Exiting so that the State may act accordingly. 
+— \_state.OnBeginExit will be called in the State by the FSM when exiting is initiated.  
+
+<strong>Q: Can you give a high-level overview of the requirements and constraints of using the FSM?</strong>  
+— FSM must have a reference to a MonoBehaviour so it can call coroutine.  
+— States must store a reference to the FSM so they may call methods on it.  
+— States must implement IState and have:  
+a) public Execute that returns IEnumerable.  
+b) public BeginExit that the FSM will call when a State transition has been initiated.  
+c) public SetStateInternalState that takes a StateInternalStates enum.  
+d) public Init takes a reference to the FSM instance.  
+— States must call FSM.OnStateExitComplete to inform the FSM that Exiting is complete.  
+  
+<strong>Downsides:</strong>     
+When doing a similar transition in multiple frames, we may see repetition of similar transition code in each State. This could be avoided by optionally putting the transition content in a separate class. This might look similar to the template Transition class used in Dunstan's sample.    
+  
+I implemented the FSM in 2 sample projects. One was based on Dunstan's sample and is included in this repository. The second is a Poker game I published here:  https://github.com/ElliotMebane/SevenUpDrawPoker  
 
 
  
