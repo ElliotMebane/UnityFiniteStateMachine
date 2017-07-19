@@ -51,7 +51,41 @@ b) public BeginExit that the FSM will call when a State transition has been init
 c) public SetStateInternalState that takes a StateInternalStates enum.  
 d) public Init takes a reference to the FSM instance.  
 — States must call FSM.OnStateExitComplete to inform the FSM that Exiting is complete.  
+   
+<strong>What are ways to cause Execute to _hold and wait_ for user input or some other dependency?</strong>  
+// A basic structure to *hold for user input*  
+while ( \_stateInternalState == StateInternalStates.Execute )  
+{  
+	yield return null;  
+}  
+		  
+// Won't _hold_, but can be used for sequential tweens, animations, etc.  
+// Here DrawCards returns IEnumerable and has several yield return statements as a sequence  
+// of tween animations complete.   
+foreach ( var cur in DrawCards() )  
+{  
+	yield return cur;  
+}  
+		
+// Moving activity into another method controled by the Execute method:  
+// Here SelectCards will execute once per frame until some action causes \_stateInternalState  
+// to no longer be StateInternalStates.Execute.  
+IEnumerator tEnumerator = SelectCards().GetEnumerator();  
+while( \_stateInternalState == StateInternalStates.Execute )  
+{  
+	tEnumerator.MoveNext();  
+	yield return null;  
+}  
   
+private IEnumerable SelectCards ()  
+{  
+	while( true )  
+	{  
+		// Detect user behavior ...  
+		yield return null;  
+	}  
+}  
+
 <strong>Downsides:</strong>     
 When doing a similar transition in multiple frames, we may see repetition of similar transition code in each State. This could be avoided by optionally putting the transition content in a separate class. This might look similar to the template Transition class used in Dunstan's sample.    
   
